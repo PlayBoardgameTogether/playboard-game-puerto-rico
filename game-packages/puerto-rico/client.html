@@ -5,632 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>波多黎各 · 海港棋桌</title>
     <style>
-      :root {
-        color-scheme: dark;
-        --bg: #211a16;
-        --surface: #30271f;
-        --raised: #3c3026;
-        --line: #705a43;
-        --text: #fbf1df;
-        --muted: #d2bea2;
-        --gold: #efc36f;
-        --green: #b7dfaa;
-        --ink: #201d16;
-        --sea: #193c40;
-        --field: #394735;
-      }
-      :root[data-theme='light'] {
-        color-scheme: light;
-        --bg: #efe4d2;
-        --surface: #fff6e6;
-        --raised: #eaddc5;
-        --line: #ad9472;
-        --text: #30291f;
-        --muted: #66553d;
-        --gold: #785018;
-        --green: #285b35;
-        --ink: #fff9e9;
-        --sea: #d0e3df;
-        --field: #dce4c8;
-      }
-      * {
-        box-sizing: border-box;
-      }
-      body {
-        margin: 0;
-        background: var(--bg);
-        color: var(--text);
-        font:
-          15px/1.55 system-ui,
-          'Microsoft YaHei',
-          sans-serif;
-      }
-      button,
-      input,
-      select {
-        font: inherit;
-      }
-      button,
-      select,
-      input[type='number'] {
-        min-height: 44px;
-      }
-      button {
-        border: 1px solid var(--line);
-        border-radius: 12px;
-        padding: 9px 14px;
-        background: var(--raised);
-        color: var(--text);
-        cursor: pointer;
-        touch-action: manipulation;
-      }
-      button:hover:not(:disabled) {
-        border-color: var(--gold);
-      }
-      button:disabled {
-        opacity: 0.5;
-        cursor: default;
-      }
-      button:focus-visible,
-      input:focus-visible,
-      select:focus-visible,
-      summary:focus-visible {
-        outline: 3px solid var(--green);
-        outline-offset: 3px;
-      }
-      button.primary {
-        background: var(--green);
-        color: var(--ink);
-        border-color: transparent;
-        font-weight: 750;
-      }
-      button.selected {
-        border: 2px solid var(--gold);
-        background: var(--surface);
-      }
-      h1,
-      h2,
-      h3,
-      p {
-        margin: 0;
-      }
-      h1 {
-        font:
-          700 clamp(24px, 3vw, 36px) / 1.2 Georgia,
-          'Songti SC',
-          serif;
-        letter-spacing: 0.06em;
-      }
-      h2 {
-        font-size: 18px;
-      }
-      h3 {
-        font-size: 16px;
-      }
-      .muted,
-      small {
-        color: var(--muted);
-      }
-      small {
-        font-size: 13px;
-      }
-      .table {
-        max-width: 1440px;
-        margin: auto;
-        padding: 22px;
-        display: grid;
-        gap: 18px;
-      }
-      .masthead {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 14px;
-      }
-      .brand {
-        display: flex;
-        gap: 14px;
-        align-items: center;
-      }
-      .seal {
-        font-size: 38px;
-        color: var(--gold);
-      }
-      .tools {
-        display: flex;
-        gap: 8px;
-      }
-      .tools button {
-        padding: 8px 12px;
-      }
-      .round {
-        color: var(--gold);
-        font-size: 13px;
-        letter-spacing: 0.12em;
-      }
-      .players {
-        display: flex;
-        gap: 8px;
-        overflow-x: auto;
-        padding: 3px 3px 7px;
-      }
-      .player {
-        flex: 1;
-        min-width: 175px;
-        border: 1px solid var(--line);
-        border-radius: 14px;
-        padding: 10px 13px;
-        background: var(--surface);
-        text-align: left;
-      }
-      .player.current {
-        border-color: var(--green);
-        box-shadow: inset 0 3px var(--green);
-      }
-      .player[aria-pressed='true'] {
-        outline: 2px solid var(--gold);
-        outline-offset: -4px;
-      }
-      .player strong {
-        display: block;
-      }
-      .player .figures {
-        display: flex;
-        gap: 12px;
-        font-size: 13px;
-        color: var(--muted);
-      }
-      .status {
-        padding: 13px 17px;
-        background: var(--sea);
-        border-radius: 14px;
-        border-left: 4px solid var(--green);
-      }
-      .status strong {
-        display: block;
-        font-size: 18px;
-      }
-      .layout {
-        display: grid;
-        grid-template-columns: minmax(280px, 0.85fr) minmax(0, 1.5fr);
-        gap: 20px;
-        align-items: start;
-      }
-      .harbor {
-        display: grid;
-        gap: 18px;
-        padding: 18px;
-        background: var(--sea);
-        border-radius: 18px;
-      }
-      .harbor summary {
-        font-size: 18px;
-        font-weight: 700;
-        cursor: pointer;
-      }
-      .harbor-body {
-        display: grid;
-        gap: 16px;
-        margin-top: 14px;
-      }
-      .ships {
-        display: grid;
-        gap: 10px;
-      }
-      .ship {
-        border-bottom: 3px solid var(--line);
-        border-radius: 3px 3px 28px 28px;
-        background: var(--surface);
-        padding: 10px 18px;
-      }
-      .ship span {
-        float: right;
-        color: var(--muted);
-      }
-      .barrels {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 4px;
-        margin-top: 5px;
-      }
-      .barrel {
-        width: 15px;
-        height: 19px;
-        border-radius: 4px;
-        border: 1px solid var(--line);
-        background: var(--raised);
-      }
-      .barrel.filled {
-        background: var(--cargo);
-      }
-      .supply {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-      .pill {
-        border-radius: 20px;
-        padding: 4px 10px;
-        background: var(--surface);
-        font-size: 13px;
-      }
-      .trade-row {
-        display: flex;
-        gap: 6px;
-        flex-wrap: wrap;
-      }
-      .trade-row span {
-        background: var(--surface);
-        padding: 7px 10px;
-        border-radius: 9px;
-      }
-      .estate {
-        min-width: 0;
-        display: grid;
-        gap: 17px;
-      }
-      .estate-heading {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        align-items: center;
-      }
-      .goods {
-        display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-        gap: 8px;
-      }
-      .good {
-        background: var(--surface);
-        padding: 10px 6px;
-        text-align: center;
-        border-radius: 12px;
-        border-top: 3px solid var(--cargo);
-      }
-      .good strong {
-        display: block;
-        font-size: 23px;
-        color: var(--cargo);
-      }
-      :root[data-theme='light'] .good strong {
-        color: var(--text);
-      }
-      .good span {
-        font-size: 13px;
-      }
-      .island,
-      .city {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 9px;
-      }
-      .tile {
-        position: relative;
-        min-height: 83px;
-        background: var(--field);
-        border-radius: 12px;
-        padding: 11px;
-        border: 1px solid var(--line);
-      }
-      .tile.empty {
-        min-height: 68px;
-        display: grid;
-        place-items: center;
-        background: transparent;
-        border-style: dashed;
-        color: var(--muted);
-        font-size: 12px;
-      }
-      .tile .symbol {
-        font-size: 26px;
-        line-height: 1;
-        color: var(--cargo, var(--gold));
-        display: block;
-        margin-bottom: 5px;
-      }
-      .tile strong {
-        font-size: 13px;
-      }
-      .work {
-        display: flex;
-        gap: 4px;
-        margin-top: 7px;
-        align-items: center;
-      }
-      .dot {
-        width: 12px;
-        height: 12px;
-        border: 1px solid var(--muted);
-        border-radius: 50%;
-        display: inline-block;
-      }
-      .dot.filled {
-        background: var(--gold);
-        border-color: var(--gold);
-      }
-      .building {
-        background: var(--surface);
-        grid-column: span 1;
-      }
-      .building.large {
-        grid-column: span 2;
-      }
-      .building small {
-        font-size: 11px;
-        display: block;
-        margin-top: 4px;
-      }
-      .building strong {
-        font-size: 13px;
-      }
-      .workers {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        margin-top: 6px;
-      }
-      .workers input {
-        width: 58px;
-        max-width: 100%;
-        padding: 3px 6px;
-        background: var(--bg);
-        color: var(--text);
-        border: 1px solid var(--line);
-        border-radius: 8px;
-      }
-      .action {
-        padding: 18px;
-        background: var(--surface);
-        border: 1px solid var(--line);
-        border-radius: 18px;
-      }
-      .action-heading {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 12px;
-      }
-      .options {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
-        gap: 9px;
-        max-height: 390px;
-        overflow: auto;
-        padding: 3px;
-      }
-      .option {
-        text-align: left;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        gap: 5px;
-        min-height: 84px;
-      }
-      .option strong {
-        color: var(--gold);
-      }
-      .option small {
-        line-height: 1.4;
-      }
-      .confirm {
-        position: sticky;
-        bottom: 0;
-        z-index: 2;
-        background: var(--surface);
-        padding: 13px 0 0;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-      }
-      .confirm p {
-        font-size: 13px;
-        color: var(--muted);
-      }
-      .confirm button {
-        flex-shrink: 0;
-      }
-      .role-progress {
-        font-size: 13px;
-        color: var(--muted);
-      }
-      .form-options {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin-top: 12px;
-      }
-      .form-options label {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-      }
-      .form-options input {
-        width: 20px;
-        height: 20px;
-      }
-      .allocation {
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin: 12px 0;
-      }
-      .store-input {
-        width: 60px;
-        display: block;
-        margin: 6px auto 0;
-        background: var(--bg);
-        color: var(--text);
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        padding: 4px;
-      }
-      .activity {
-        border-top: 1px solid var(--line);
-        padding-top: 12px;
-        color: var(--muted);
-        font-size: 13px;
-        min-height: 33px;
-      }
-      .results {
-        display: grid;
-        gap: 10px;
-      }
-      .result {
-        padding: 15px;
-        background: var(--raised);
-        border-radius: 12px;
-      }
-      .result strong {
-        font-size: 20px;
-        color: var(--gold);
-      }
-      dialog {
-        max-width: 650px;
-        width: calc(100% - 28px);
-        max-height: 85vh;
-        border: 1px solid var(--line);
-        border-radius: 20px;
-        background: var(--surface);
-        color: var(--text);
-        padding: 24px;
-      }
-      dialog::backdrop {
-        background: #000a;
-      }
-      .dialog-head {
-        display: flex;
-        justify-content: space-between;
-        gap: 14px;
-        align-items: center;
-        margin-bottom: 18px;
-      }
-      .rules p {
-        margin-bottom: 12px;
-      }
-      .building-list {
-        display: grid;
-        gap: 12px;
-      }
-      .building-list article {
-        border-bottom: 1px solid var(--line);
-        padding-bottom: 10px;
-      }
-      .hidden {
-        display: none !important;
-      }
-      @media (min-width: 1100px) {
-        .island {
-          grid-template-columns: repeat(6, minmax(0, 1fr));
-        }
-        .city {
-          grid-template-columns: repeat(4, minmax(0, 1fr));
-        }
-      }
-      @media (max-width: 760px) {
-        .table {
-          padding: 12px;
-          gap: 13px;
-        }
-        .masthead {
-          align-items: start;
-        }
-        .brand {
-          gap: 8px;
-        }
-        .seal {
-          font-size: 30px;
-        }
-        .tools {
-          gap: 4px;
-        }
-        .tools button {
-          padding: 8px;
-        }
-        .layout {
-          display: flex;
-          flex-direction: column;
-        }
-        .estate {
-          width: 100%;
-          order: 0;
-        }
-        .harbor {
-          width: 100%;
-          order: 1;
-        }
-        .player {
-          min-width: 151px;
-          padding: 9px 11px;
-        }
-        .island,
-        .city {
-          gap: 7px;
-        }
-        .tile {
-          padding: 8px;
-          min-height: 80px;
-        }
-        .action {
-          padding: 13px;
-        }
-        .confirm {
-          gap: 8px;
-        }
-        .options {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-          max-height: 300px;
-        }
-        .option {
-          padding: 10px;
-        }
-        .goods {
-          gap: 5px;
-        }
-        .good {
-          padding: 8px 3px;
-        }
-        .good span {
-          font-size: 12px;
-        }
-        .estate-heading {
-          align-items: start;
-        }
-        .estate-heading small {
-          max-width: 145px;
-          text-align: right;
-        }
-        .round {
-          font-size: 11px;
-        }
-        .form-options {
-          font-size: 13px;
-        }
-      }
-      @media (prefers-reduced-motion: no-preference) {
-        .status {
-          animation: arrival 0.2s ease-out;
-        }
-        @keyframes arrival {
-          from {
-            opacity: 0.7;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-      }
+      /* PUERTO_RICO_STYLES */
     </style>
   </head>
   <body>
-    <main class="table" id="table">
+    <main class="table" id="table" data-region="island">
       <header class="masthead">
         <div class="brand">
-          <span class="seal" aria-hidden="true">⚓</span>
+          <span class="seal" aria-hidden="true"></span>
           <div>
             <p class="round" id="round">PUERTO RICO</p>
             <h1>波多黎各</h1>
+            <p class="subtitle">种植、兴建，让海港繁荣。</p>
           </div>
         </div>
         <div class="tools">
@@ -640,19 +26,47 @@
       </header>
       <div class="status" role="status" aria-live="polite" id="status">正在等待棋桌同步…</div>
       <nav class="players" id="players" aria-label="查看玩家岛屿"></nav>
-      <div class="layout">
+      <div class="layout" id="layout">
+        <nav class="mobile-regions" aria-label="棋桌区域">
+          <button id="show-island" aria-pressed="true" aria-controls="estate-board">
+            岛屿与城市
+          </button>
+          <button id="show-harbor" aria-pressed="false" aria-controls="harbor">公共海港</button>
+        </nav>
         <details class="harbor" id="harbor" open>
           <summary>公共海港</summary>
           <div class="harbor-body">
-            <div class="supply" id="supply"></div>
             <div>
               <h3>货船</h3>
+              <p class="harbor-note" id="ship-hint">每条船只承载一种货物；满船在阶段结束时卸货。</p>
               <div class="ships" id="ships"></div>
             </div>
-            <div>
-              <h3>贸易所 <small id="trade-count"></small></h3>
-              <div class="trade-row" id="trade"></div>
-            </div>
+            <section class="harbor-landmark" aria-label="殖民所与工人船">
+              <span class="art buildings-art landmark-art" aria-hidden="true"
+                ><span class="sprite" style="background-position: 75% 100%"></span
+              ></span>
+              <div>
+                <h3>殖民所与工人船</h3>
+                <div class="colonists">
+                  <span class="art objects-art colony-ship" aria-hidden="true"
+                    ><span class="sprite" style="background-position: 100% 33.333333%"></span
+                  ></span>
+                  <div id="colony-count"></div>
+                </div>
+                <div class="worker-tokens" id="colony-workers" aria-hidden="true"></div>
+                <p class="harbor-note">市长带领工人上岸，分配到种植园与城市岗位。</p>
+              </div>
+            </section>
+            <div class="supply" id="supply"></div>
+            <section class="harbor-landmark" aria-label="贸易所">
+              <span class="art buildings-art landmark-art" aria-hidden="true"
+                ><span class="sprite" style="background-position: 100% 100%"></span
+              ></span>
+              <div>
+                <h3>贸易所 <small id="trade-count"></small></h3>
+                <div class="trade-row" id="trade"></div>
+              </div>
+            </section>
             <div>
               <h3>货物供给</h3>
               <div class="supply" id="bank"></div>
@@ -664,23 +78,25 @@
           </div>
         </details>
         <div class="estate">
-          <section class="action" id="action" aria-label="当前行动"></section>
           <div class="estate-heading">
             <h2 id="estate-title">我的岛屿</h2>
             <small id="estate-info"></small>
           </div>
           <div class="goods" id="goods" aria-label="玩家货物"></div>
-          <section aria-label="种植园">
-            <h3>岛屿 <small id="island-count"></small></h3>
-            <div class="island" id="island"></div>
-          </section>
-          <section aria-label="城市建筑">
-            <div class="estate-heading">
-              <h3>城市 <small id="city-count"></small></h3>
-              <button id="catalog">建筑图鉴</button>
-            </div>
-            <div class="city" id="city"></div>
-          </section>
+          <section class="action" id="action" aria-label="当前行动"></section>
+          <div class="estate-board" id="estate-board">
+            <section class="board-section" aria-label="种植园">
+              <h3>岛屿 <small id="island-count"></small></h3>
+              <div class="island" id="island"></div>
+            </section>
+            <section class="board-section" aria-label="城市建筑">
+              <div class="estate-heading">
+                <h3>城市 <small id="city-count"></small></h3>
+                <button id="catalog">建筑图鉴</button>
+              </div>
+              <div class="city" id="city"></div>
+            </section>
+          </div>
         </div>
       </div>
       <p class="activity" id="activity" aria-live="polite">选择角色，把握全桌的节奏。</p>
@@ -720,6 +136,13 @@
       </div>
       <div class="building-list" id="building-list"></div>
     </dialog>
+    <dialog id="object-dialog">
+      <div class="dialog-head">
+        <h2 id="object-title">物件详情</h2>
+        <button data-close="object-dialog">关闭</button>
+      </div>
+      <div class="object-detail" id="object-detail"></div>
+    </dialog>
     <script>
       /* PUERTO_RICO_SHARED */
       (() => {
@@ -731,6 +154,7 @@
           replay = false,
           inspected = -1,
           selected = null,
+          selectedCargo = null,
           allocation = null,
           keep = null;
         let lastKey = '',
@@ -754,6 +178,94 @@
         const player = (i) => (i === v.you ? '你' : `玩家 ${i + 1}`);
         const good = (g) => (g === 5 ? '采石场' : GOODS[g]);
         const locked = () => busy || pending || replay;
+        const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+        const narrow = matchMedia('(max-width: 760px)');
+        const animations = new Set();
+        const ghosts = new Set();
+        const art = (kind, index, extra = '') => {
+          const columns = kind === 'buildings' ? 5 : 4;
+          const el = node('span', undefined, `art ${kind}-art ${extra}`);
+          const sprite = node('span', undefined, 'sprite');
+          sprite.style.backgroundPosition = `${((index % columns) * 100) / (columns - 1)}% ${(Math.floor(index / columns) * 100) / (columns - 1)}%`;
+          el.append(sprite);
+          el.setAttribute('aria-hidden', 'true');
+          return el;
+        };
+        const roleArt = (i) =>
+          [
+            ['objects', 0],
+            ['buildings', 23],
+            ['buildings', 4],
+            ['buildings', 14],
+            ['buildings', 24],
+            ['objects', 6],
+            ['objects', 13],
+            ['objects', 13],
+          ][i];
+        function setRegion(next) {
+          $('table').dataset.region = next;
+          $('show-island').setAttribute('aria-pressed', String(next === 'island'));
+          $('show-harbor').setAttribute('aria-pressed', String(next === 'harbor'));
+          if (next === 'harbor') $('harbor').open = true;
+        }
+        function clearAnimations() {
+          animations.forEach((animation) => animation.cancel());
+          animations.clear();
+          ghosts.forEach((el) => el.remove());
+          ghosts.clear();
+        }
+        function animate(el, frames, duration = 650) {
+          if (!el || reduced.matches || document.hidden || !el.getClientRects().length) return;
+          const animation = el.animate(frames, { duration, easing: 'cubic-bezier(.2,.7,.2,1)' });
+          animations.add(animation);
+          animation.onfinish = animation.oncancel = () => animations.delete(animation);
+          return animation;
+        }
+        function flight(source, target, index) {
+          if (!source || !target || reduced.matches || document.hidden) return;
+          const from = source.getBoundingClientRect(),
+            to = target.getBoundingClientRect();
+          if (!from.width || !to.width || to.top > innerHeight || to.bottom < 0) return;
+          const el = art('objects', index, 'flight');
+          el.style.left = `${from.left + from.width / 2 - 22}px`;
+          el.style.top = `${from.top + from.height / 2 - 22}px`;
+          document.body.append(el);
+          ghosts.add(el);
+          const animation = animate(
+            el,
+            [
+              { transform: 'translate(0,0) scale(1)', opacity: 0.9 },
+              {
+                transform: `translate(${to.left + to.width / 2 - from.left - from.width / 2}px,${to.top + to.height / 2 - from.top - from.height / 2}px) scale(.65)`,
+                opacity: 0,
+              },
+            ],
+            780,
+          );
+          if (animation)
+            animation.onfinish = animation.oncancel = () => {
+              animations.delete(animation);
+              ghosts.delete(el);
+              el.remove();
+            };
+          else {
+            ghosts.delete(el);
+            el.remove();
+          }
+        }
+        function showObject(kind, index, title, lines) {
+          $('object-title').textContent = title;
+          const text = node('div');
+          lines.forEach((line) => text.append(node('p', line)));
+          $('object-detail').replaceChildren(art(kind, index), text);
+          $('object-dialog').showModal();
+        }
+        function picture(kind, index, title, lines) {
+          const el = button('', () => showObject(kind, index, title, lines), 'object-picture');
+          el.setAttribute('aria-label', `查看${title}详情`);
+          el.append(art(kind, index));
+          return el;
+        }
         const active = (p, id) => p.city.some((b) => BUILDINGS[b.id].id === id && b.workers > 0);
         const heading = {
           role: '选择本轮角色',
@@ -791,6 +303,9 @@
               el.disabled = locked();
             });
           document.querySelectorAll('.workers input,.store-input').forEach((el) => {
+            el.disabled = locked();
+          });
+          document.querySelectorAll('[data-board-action]').forEach((el) => {
             el.disabled = locked();
           });
           const confirm = $('confirm');
@@ -876,9 +391,11 @@
           if (a.type === 'hacienda') return '先取得随机地块，之后仍可选明牌；确认后不能撤销盲抽';
           if (a.type === 'pass')
             return v.phase === 'ship' ? '保留货物，稍后仍需仓储检查' : '其他玩家继续执行该角色行动';
-          return '选择后确认，服务器校验并同步全桌';
+          if (a.type === 'ship') return '预览货舱装载位置；确认后每桶取得 1 分，特权与港口另计。';
+          return '选择后确认，结果同步到全桌。';
         }
         function renderAction() {
+          $('confirm-bar')?.remove();
           const root = $('action');
           root.replaceChildren();
           const head = node('div', undefined, 'action-heading');
@@ -980,10 +497,14 @@
           } else {
             const options = node('div', undefined, 'options');
             v.actions.forEach((a, i) => {
+              // Public ship targets are selected on the ships themselves.
+              if (a.type === 'ship' && a.ship !== 3) return;
+              if (a.type === 'ship' && selectedCargo !== null && a.good !== selectedCargo) return;
               const el = button(
                 '',
                 () => {
                   selected = structuredClone(a);
+                  if (a.type === 'ship') selectedCargo = a.good;
                   renderAction();
                   $('action')
                     .querySelector('[data-option="' + i + '"]')
@@ -997,6 +518,16 @@
               );
               el.setAttribute('aria-label', describe(a));
               el.dataset.option = String(i);
+              let image = null;
+              if (a.type === 'role') image = roleArt(a.role);
+              else if (a.type === 'build') image = ['buildings', a.building];
+              else if (a.type === 'settle') image = ['objects', a.good];
+              else if (['bonus', 'sell', 'ship'].includes(a.type))
+                image = ['objects', a.good === 4 ? 12 : a.good + 8];
+              else if (a.type === 'hacienda') image = ['buildings', 3];
+              else if (a.type === 'produce') image = ['buildings', 14];
+              if (image) el.append(art(...image));
+              else el.classList.add('option-plain');
               el.append(node('strong', describe(a)), node('small', optionHint(a)));
               options.append(el);
             });
@@ -1044,9 +575,29 @@
             'primary',
           );
           confirm.id = 'confirm';
+          footer.id = 'confirm-bar';
           footer.append(text, confirm);
           root.append(footer);
+          placeConfirmation();
           refreshDraft();
+        }
+        function placeConfirmation() {
+          const footer = $('confirm-bar');
+          if (!footer) return;
+          if (
+            narrow.matches &&
+            v.phase === 'ship' &&
+            selected?.type === 'ship' &&
+            selected.ship < 3
+          ) {
+            const ship = $('ships').querySelector(`[data-ship="${selected.ship}"]`);
+            if (ship) {
+              ship.after(footer);
+              return;
+            }
+          }
+          if (narrow.matches && v.phase === 'assign') $('estate-board').append(footer);
+          else $('action').append(footer);
         }
         function refreshDraft() {
           const hint = $('draft-hint');
@@ -1062,8 +613,104 @@
             hint.textContent = draftValid()
               ? `保留 ${sum(keep)} 桶，其余归还供给`
               : '超过仓储容量：按种类保存，另可留一桶';
-          else hint.textContent = selected ? describe(selected) : '先选择一项，再确认';
+          else
+            hint.textContent = selected ? `${describe(selected)} · 尚未提交` : '先选择一项，再确认';
+          if (v.phase === 'ship') renderShips();
+          paintCargoSelection();
           updateButtons();
+        }
+        function renderShips() {
+          const footer = $('confirm-bar');
+          if (footer && $('ships').contains(footer)) $('action').append(footer);
+          $('ships').replaceChildren();
+          const canChoose = v.you === v.current && v.phase === 'ship' && !replay;
+          const choices = canChoose ? v.actions.filter((a) => a.type === 'ship') : [];
+          $('ship-hint').textContent = canChoose
+            ? '先点选你的货物，再选亮起的船。虚线舱格是预览，确认后才装船。'
+            : '每条船只承载一种货物；满船在阶段结束时卸货。';
+          v.ships.forEach((ship, i) => {
+            const candidates = choices.filter(
+              (a) => a.ship === i && (selectedCargo === null || a.good === selectedCargo),
+            );
+            const candidate = candidates.length === 1 ? candidates[0] : null;
+            const chosen = selected?.type === 'ship' && selected.ship === i;
+            const el = candidate
+              ? button('', () => {
+                  selected = structuredClone(candidate);
+                  selectedCargo = candidate.good;
+                  renderAction();
+                  paintCargoSelection();
+                  $('ships').querySelector(`[data-ship="${i}"]`)?.focus({ preventScroll: true });
+                  if (narrow.matches)
+                    $('confirm-bar')?.scrollIntoView({ block: 'center', behavior: 'instant' });
+                })
+              : node('article');
+            el.className = `ship${candidate ? ' target' : ''}${chosen ? ' selected' : ''}`;
+            el.dataset.ship = String(i);
+            if (candidate) {
+              el.dataset.boardAction = '';
+              el.setAttribute('aria-label', `预览${describe(candidate)}`);
+              el.setAttribute('aria-pressed', String(chosen));
+            }
+            el.append(art('objects', 6, 'ship-visual'));
+            const content = node('div'),
+              title = node('div', undefined, 'ship-title');
+            title.append(
+              node('strong', `${ship.capacity} 格货船`),
+              node('span', `${ship.load} / ${ship.capacity}`),
+            );
+            content.append(
+              title,
+              node(
+                'span',
+                ship.good === null
+                  ? '空船 · 可接纳一种货物'
+                  : `${good(ship.good)} · 余 ${ship.capacity - ship.load} 格`,
+                'ship-caption',
+              ),
+            );
+            const row = node('div', undefined, 'barrels');
+            row.setAttribute('aria-label', `${ship.capacity} 格货船已装 ${ship.load} 桶`);
+            const amount = chosen
+              ? Math.min(v.players[v.you].goods[selected.good], ship.capacity - ship.load)
+              : 0;
+            for (let j = 0; j < ship.capacity; j++) {
+              const preview = chosen && j >= ship.load && j < ship.load + amount;
+              const slot = node(
+                'span',
+                undefined,
+                `barrel${j < ship.load ? ' filled' : ''}${preview ? ' preview' : ''}`,
+              );
+              slot.style.setProperty(
+                '--cargo',
+                GOOD_COLORS[preview ? selected.good : ship.good] ?? 'var(--raised)',
+              );
+              if (j < ship.load || preview) {
+                const cargo = preview ? selected.good : ship.good;
+                slot.append(art('objects', cargo === 4 ? 12 : cargo + 8));
+              }
+              slot.setAttribute('aria-hidden', 'true');
+              row.append(slot);
+            }
+            const preview = chosen
+              ? `预览 +${amount} 桶${good(selected.good)} · 未提交`
+              : candidate
+                ? `可装载${good(candidate.good)}`
+                : ship.load === ship.capacity
+                  ? '满载 · 等待阶段结束'
+                  : '空余舱位可见';
+            content.append(row, node('span', preview, 'ship-preview'));
+            el.append(content);
+            $('ships').append(el);
+          });
+          placeConfirmation();
+        }
+        function paintCargoSelection() {
+          $('goods')
+            .querySelectorAll('button')
+            .forEach((el) =>
+              el.setAttribute('aria-pressed', String(Number(el.dataset.good) === selectedCargo)),
+            );
         }
         function renderEstate() {
           const index = inspected >= 0 ? inspected : v.you >= 0 ? v.you : 0,
@@ -1074,9 +721,36 @@
             `金币 ${p.money} · 工人 ${p.workers}（待业 ${p.idle}） · 筹码 ${p.vp === null ? '保密' : p.vp}`;
           $('goods').replaceChildren();
           p.goods.forEach((n, g) => {
-            const el = node('div', undefined, 'good');
+            const choosing =
+              index === v.you &&
+              v.you === v.current &&
+              v.phase === 'ship' &&
+              !replay &&
+              v.actions.some((a) => a.type === 'ship' && a.good === g);
+            const el = choosing
+              ? button(
+                  '',
+                  () => {
+                    selectedCargo = g;
+                    selected = null;
+                    renderAction();
+                    paintCargoSelection();
+                  },
+                  'good',
+                )
+              : node('div', undefined, 'good');
+            el.dataset.good = String(g);
+            if (choosing) {
+              el.setAttribute('aria-label', `选择${good(g)}装船，库存 ${n} 桶`);
+              el.setAttribute('aria-pressed', String(selectedCargo === g));
+              el.dataset.boardAction = '';
+            }
             el.style.setProperty('--cargo', GOOD_COLORS[g]);
-            el.append(node('strong', String(n)), node('span', good(g)));
+            el.append(
+              art('objects', g === 4 ? 12 : g + 8),
+              node('strong', String(n)),
+              node('span', good(g)),
+            );
             $('goods').append(el);
           });
           $('island-count').textContent = `${p.island.length} / 12`;
@@ -1095,39 +769,76 @@
                 allocation[type][i] = Number.isInteger(n) && n >= 0 && n <= slots ? n : NaN;
                 refreshDraft();
               };
-              wrap.append(input);
+              wrap.append(input, node('span', `/ ${slots}`));
               el.append(wrap);
             } else {
               const row = node('div', undefined, 'work');
               row.setAttribute('aria-label', `工人 ${count} / ${slots}`);
-              for (let j = 0; j < slots; j++)
-                row.append(node('span', undefined, `dot${j < count ? ' filled' : ''}`));
+              for (let j = 0; j < slots; j++) {
+                const token = node(
+                  'span',
+                  undefined,
+                  `worker-token${j < count ? '' : ' unfilled'}`,
+                );
+                token.setAttribute('aria-hidden', 'true');
+                row.append(token);
+              }
+              row.append(node('span', `${count}/${slots} 上岗`));
               el.append(row);
             }
           }
           $('island').replaceChildren();
           p.island.forEach((t, i) => {
             const el = node('div', undefined, 'tile');
+            el.dataset.land = String(i);
             el.style.setProperty('--cargo', t.good === 5 ? 'var(--muted)' : GOOD_COLORS[t.good]);
             el.append(
-              node('span', t.good === 5 ? '▱' : '❧', 'symbol'),
-              node('strong', good(t.good)),
+              picture('objects', t.good, `${good(t.good)}地块`, [
+                t.good === 5
+                  ? '有人上岗后减少建造费用，减价受建筑列上限约束。'
+                  : t.good === 0
+                    ? '一位工人上岗即可生产玉米，无需加工厂。'
+                    : `需要${good(t.good)}种植园与对应加工厂同时有人工作，产量取两者工人数较小值。`,
+                `当前工人 ${t.workers} / 1。分配工人在市长阶段确认后生效。`,
+              ]),
             );
-            workers(el, 'island', i, t.workers, 1, `${good(t.good)}地块 ${i + 1}`);
+            const body = node('div', undefined, 'tile-body');
+            body.append(node('strong', good(t.good)));
+            workers(body, 'island', i, t.workers, 1, `${good(t.good)}地块 ${i + 1}`);
+            el.append(body);
             $('island').append(el);
           });
-          for (let i = p.island.length; i < 12; i++)
-            $('island').append(node('div', '未开拓', 'tile empty'));
+          for (let i = p.island.length; i < 12; i++) {
+            const empty = node('div', undefined, 'tile empty');
+            empty.setAttribute('aria-label', `未开拓地块 ${i + 1}`);
+            $('island').append(empty);
+          }
           $('city').replaceChildren();
           p.city.forEach((b, i) => {
             const def = BUILDINGS[b.id],
               el = node('div', undefined, `tile building${def.size === 2 ? ' large' : ''}`);
-            el.append(node('strong', def.name), node('small', `${def.points} 分 · ${def.size} 格`));
-            workers(el, 'city', i, b.workers, def.slots, def.name);
+            el.dataset.building = String(b.id);
+            el.append(
+              picture('buildings', b.id, def.name, [
+                def.text,
+                `${def.cost} 金币原价 · ${def.points} 基础分 · 占用 ${def.size} 格城市 · ${def.slots} 个岗位。`,
+                `${b.workers}/${def.slots} 位工人上岗；功能效果须启用，基础分不受上岗影响。`,
+              ]),
+            );
+            const body = node('div', undefined, 'tile-body');
+            body.append(
+              node('strong', def.name),
+              node('small', `${def.points} 分 · ${def.size} 格`),
+            );
+            workers(body, 'city', i, b.workers, def.slots, def.name);
+            el.append(body);
             $('city').append(el);
           });
-          for (let i = sum(p.city.map((b) => BUILDINGS[b.id].size)); i < 12; i++)
-            $('city').append(node('div', '建设用地', 'tile empty'));
+          for (let i = sum(p.city.map((b) => BUILDINGS[b.id].size)); i < 12; i++) {
+            const empty = node('div', undefined, 'tile empty');
+            empty.setAttribute('aria-label', `建设用地 ${i + 1}`);
+            $('city').append(empty);
+          }
         }
         function render() {
           if (!v) return;
@@ -1175,44 +886,45 @@
             $('players').append(el);
           });
           $('supply').replaceChildren();
-          [
-            `工人供给 ${v.workers}`,
-            `工人船 ${v.workerShip}`,
-            `胜利点 ${v.vp}`,
-            `采石场 ${v.quarries}`,
-          ].forEach((t) => $('supply').append(node('span', t, 'pill')));
-          $('ships').replaceChildren();
-          v.ships.forEach((ship) => {
-            const el = node('div', undefined, 'ship');
-            el.append(
-              node('strong', ship.good === null ? '空船' : good(ship.good)),
-              node('span', `${ship.load} / ${ship.capacity}`),
-            );
-            const row = node('div', undefined, 'barrels');
-            row.setAttribute('aria-label', `${ship.capacity} 格货船已装 ${ship.load} 桶`);
-            for (let j = 0; j < ship.capacity; j++) {
-              const b = node('span', undefined, `barrel${j < ship.load ? ' filled' : ''}`);
-              if (ship.good !== null) b.style.setProperty('--cargo', GOOD_COLORS[ship.good]);
-              row.append(b);
-            }
-            el.append(row);
-            $('ships').append(el);
-          });
+          [`工人供给 ${v.workers}`, `胜利点 ${v.vp}`, `采石场 ${v.quarries}`].forEach((t) =>
+            $('supply').append(node('span', t, 'pill')),
+          );
+          $('colony-count').replaceChildren(
+            node('strong', `${v.workerShip} 位`, 'colony-count'),
+            node('p', '在船上等待分配', 'harbor-note'),
+          );
+          $('colony-workers').replaceChildren();
+          for (let i = 0; i < Math.min(v.workerShip, 20); i++)
+            $('colony-workers').append(node('span', undefined, 'worker-token'));
+          renderShips();
           $('trade-count').textContent = `${v.trade.length} / 4`;
           $('trade').replaceChildren();
-          v.trade.forEach((g) => $('trade').append(node('span', good(g))));
-          if (!v.trade.length) $('trade').append(node('small', '尚无货物'));
+          for (let i = 0; i < 4; i++) {
+            const el = node('div', undefined, `trade-slot${i >= v.trade.length ? ' empty' : ''}`);
+            if (i < v.trade.length) {
+              const g = v.trade[i];
+              el.append(art('objects', g === 4 ? 12 : g + 8), node('span', good(g)));
+            } else el.textContent = '空位';
+            $('trade').append(el);
+          }
           $('bank').replaceChildren();
-          v.bank.forEach((n, g) => $('bank').append(node('span', `${good(g)} ${n}`, 'pill')));
+          v.bank.forEach((n, g) => {
+            const el = node('span', undefined, 'pill');
+            el.append(art('objects', g === 4 ? 12 : g + 8), node('span', `${good(g)} ${n}`));
+            $('bank').append(el);
+          });
           $('role-list').replaceChildren();
-          v.roles.forEach((r, i) =>
-            $('role-list').append(
+          v.roles.forEach((r, i) => {
+            const el = node('p');
+            el.append(
+              art(...roleArt(i)),
               node(
-                'p',
-                `${ROLES[i].icon} ${ROLES[i].name} · ${r.owner === null ? `可选，累积 ${r.money} 金币` : player(r.owner) + '已选择'}`,
+                'span',
+                `${ROLES[i].name} · ${r.owner === null ? `可选，累积 ${r.money} 金币` : player(r.owner) + '已选择'}`,
               ),
-            ),
-          );
+            );
+            $('role-list').append(el);
+          });
           renderAction();
           renderEstate();
           updateButtons();
@@ -1225,9 +937,12 @@
           const data = event.data,
             next = data.view;
           if (!next || !Array.isArray(next.players) || !Array.isArray(next.actions)) return;
+          const previous = v;
           const key = `${next.you}:${next.move}:${next.phase}`;
           if (key !== lastKey) {
+            clearAnimations();
             selected = null;
+            selectedCargo = null;
             allocation = null;
             keep = null;
             pending = false;
@@ -1236,6 +951,9 @@
             useWorker = true;
             $('catalog-dialog').close();
             $('help-dialog').close();
+            $('object-dialog').close();
+            if (!previous || previous.phase !== next.phase)
+              setRegion(next.phase === 'ship' ? 'harbor' : 'island');
             lastKey = key;
           } else if (!data.busy) pending = false;
           v = next;
@@ -1244,11 +962,13 @@
           if (v.you === v.current && v.phase === 'assign' && !allocation)
             allocation = structuredClone(v.actions[0]);
           if (v.you === v.current && v.phase === 'store' && !keep) keep = v.actions[0].keep.slice();
+          const fresh = [];
           for (const envelope of data.events || []) {
             const e = envelope.event || envelope,
               id = envelope.eventId;
             if (!id || seen.has(id)) continue;
             seen.add(id);
+            fresh.push(e);
             if (seen.size > 100) {
               const first = seen.values().next().value;
               seen.delete(first);
@@ -1267,6 +987,61 @@
             if (history.length > 6) history.shift();
           }
           render();
+          // Initial/catch-up snapshots do not carry live events. Also require a
+          // contiguous move and the same viewer, so reconnect/jumps cannot replay
+          // retained event history. Explicit replay steps have their own gate.
+          const mayAnimate =
+            previous &&
+            previous.you === v.you &&
+            !busy &&
+            (data.replay ? data.replay.animate : v.move === previous.move + 1);
+          if (mayAnimate) fresh.slice(-5).forEach(presentEvent);
+        }
+        function presentEvent(e) {
+          const owner = inspected >= 0 ? inspected : v.you;
+          const visible = owner === e.player;
+          const origin = visible
+            ? $('goods').querySelector(`[data-good="${e.good}"]`)
+            : $('players').children[e.player];
+          if (e.type === 'ship') {
+            const target =
+              e.ship === 3 ? $('harbor') : $('ships').querySelector(`[data-ship="${e.ship}"]`);
+            flight(origin, target, e.good === 4 ? 12 : e.good + 8);
+            animate(
+              target,
+              [
+                { boxShadow: 'inset 0 0 0 3px #f1cd87' },
+                { boxShadow: 'inset 0 0 0 0px transparent' },
+              ],
+              900,
+            );
+          } else if (e.type === 'build' && visible) {
+            const target = $('city').querySelector(`[data-building="${e.building}"]`);
+            animate(target, [
+              { transform: 'translateY(-18px) scale(.92)', opacity: 0.3 },
+              { transform: 'translateY(0) scale(1)', opacity: 1 },
+            ]);
+          } else if (e.type === 'settle' && visible) {
+            animate(
+              $('island').querySelectorAll('.tile:not(.empty)')[v.players[owner].island.length - 1],
+              [
+                { opacity: 0.3, transform: 'scale(.88)' },
+                { opacity: 1, transform: 'scale(1)' },
+              ],
+            );
+          } else if (e.type === 'assign' && visible) {
+            document
+              .querySelectorAll('.work')
+              .forEach((el) => animate(el, [{ opacity: 0.3 }, { opacity: 1 }]));
+          } else if (e.type === 'produce' && visible) {
+            e.goods?.forEach((count, g) => {
+              if (count)
+                animate($('goods').children[g], [
+                  { transform: 'translateY(-9px)' },
+                  { transform: 'translateY(0)' },
+                ]);
+            });
+          } else if (e.type === 'sell') flight(origin, $('trade'), e.good === 4 ? 12 : e.good + 8);
         }
         const light = matchMedia('(prefers-color-scheme: light)');
         function theme(isLight) {
@@ -1277,24 +1052,49 @@
         $('theme').onclick = () => theme(document.documentElement.dataset.theme !== 'light');
         $('help').onclick = () => $('help-dialog').showModal();
         $('catalog').onclick = () => $('catalog-dialog').showModal();
+        $('show-island').onclick = () => setRegion('island');
+        $('show-harbor').onclick = () => setRegion('harbor');
         document.querySelectorAll('[data-close]').forEach((b) => {
           b.onclick = () => $(b.dataset.close).close();
         });
         BUILDINGS.forEach((b) => {
           const el = node('article');
           el.append(
+            art('buildings', BUILDINGS.indexOf(b)),
             node('h3', `${b.name} · ${b.cost} 金币 · ${b.points} 分`),
             node('p', `${b.slots} 岗位 · ${b.size} 格；${b.text}`),
           );
           $('building-list').append(el);
         });
-        if (matchMedia('(max-width:760px)').matches) $('harbor').open = false;
+        function cancelDraft(event) {
+          if (
+            event.key !== 'Escape' ||
+            document.querySelector('dialog[open]') ||
+            locked() ||
+            !selected
+          )
+            return;
+          selected = null;
+          selectedCargo = null;
+          renderAction();
+          paintCargoSelection();
+        }
+        function pausePresentation() {
+          if (document.hidden) clearAnimations();
+        }
+        addEventListener('keydown', cancelDraft);
+        document.addEventListener('visibilitychange', pausePresentation);
+        reduced.addEventListener('change', clearAnimations);
+        narrow.addEventListener('change', placeConfirmation);
         let frame = 0,
           lastHeight = 0;
         const observer = new ResizeObserver(() => {
           cancelAnimationFrame(frame);
           frame = requestAnimationFrame(() => {
-            const height = Math.max(320, Math.ceil($('table').getBoundingClientRect().height));
+            const height = Math.min(
+              4096,
+              Math.max(320, Math.ceil($('table').getBoundingClientRect().height)),
+            );
             if (height !== lastHeight) {
               lastHeight = height;
               parent.postMessage({ type: 'boardgame:resize', height }, '*');
@@ -1309,6 +1109,11 @@
             observer.disconnect();
             cancelAnimationFrame(frame);
             removeEventListener('message', receive);
+            removeEventListener('keydown', cancelDraft);
+            document.removeEventListener('visibilitychange', pausePresentation);
+            reduced.removeEventListener('change', clearAnimations);
+            narrow.removeEventListener('change', placeConfirmation);
+            clearAnimations();
           },
           { once: true },
         );
