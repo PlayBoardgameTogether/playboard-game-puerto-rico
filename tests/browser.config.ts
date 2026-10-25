@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
+  tsconfig: './browser.tsconfig.json',
   testDir: './browser',
   outputDir: '../test-results',
   workers: 1,

@@ -20,6 +20,8 @@
 
 打包最后统一文本行尾与 ZIP 本地日期字段，`TZ=UTC` 与 `TZ=Asia/Shanghai` 两次构建摘要相同，最终 `pnpm verify` 再通过。该调整只影响跨系统归档一致性，不改变已验证的画面与动作行为。
 
+首轮 GitHub CI 的浏览器测试未启动：独立仓库没有平台 workspace 的 `@boardgame/game-sdk` 链接。本机嵌套目录解析到了平台依赖，未暴露此问题。浏览器测试现显式通过 `tests/browser.tsconfig.json` 映射本仓库固定 SDK 快照，与 Vitest 既有别名保持一致；不引入平台运行代码、依赖安装或新的 SDK 维护来源。该修补不改变 ZIP 字节。
+
 ## 限制与发布状态
 
 - 用户明确本次先交付安装包：不合并发布、不打标签、不创建 GitHub Release、不上传生产、不更新服务器或平台来源锁。

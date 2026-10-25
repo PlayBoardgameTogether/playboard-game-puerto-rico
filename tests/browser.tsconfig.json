@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "baseUrl": "..",
+    "paths": {
+      "@boardgame/game-sdk": ["packages/game-sdk/src/index.ts"]
+    }
+  }
+}
