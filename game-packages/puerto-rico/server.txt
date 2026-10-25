@@ -801,7 +801,7 @@ function deserialize(value) {
 const game = {
   manifest: {
     id: 'online.puerto-rico',
-    version: '1.0.0',
+    version: '1.1.0',
     sdkRange: '^0.1.0',
     contentVersion: '1.0.0',
     name: '波多黎各',
@@ -809,7 +809,7 @@ const game = {
     players: { min: 3, max: 5 },
     mode: 'rules-driven',
     capabilities: ['private-view', 'turn-based'],
-    defaultAssetPack: { id: 'puerto-rico.original', version: '1.0.0' },
+    defaultAssetPack: { id: 'puerto-rico.original', version: '1.1.0' },
     developmentOnly: false,
   },
   validateOptions(value) {

@@ -4,15 +4,24 @@ import { readFile } from 'node:fs/promises';
 
 export async function puertoRicoFiles() {
   const base = new URL('../game-packages/puerto-rico/', import.meta.url);
-  const shared = await readFile(new URL('shared.txt', base), 'utf8');
+  const text = async (file) =>
+    (await readFile(new URL(file, base), 'utf8')).replaceAll('\r\n', '\n');
+  const shared = await text('shared.txt');
+  let client = (await text('client.html'))
+    .replace('/* PUERTO_RICO_SHARED */', shared)
+    .replace('/* PUERTO_RICO_STYLES */', await text('client.css'));
+  for (const [key, file] of Object.entries({
+    HARBOR: 'harbor',
+    ICON: 'icon',
+    BUILDINGS: 'buildings',
+    OBJECTS: 'objects',
+  })) {
+    const png = await readFile(new URL(`art/${file}.png`, base));
+    client = client.replaceAll(`__ART_${key}__`, `data:image/png;base64,${png.toString('base64')}`);
+  }
   return {
-    'game.json': await readFile(new URL('game.json', base)),
-    'server.js': Buffer.from(shared + '\n' + (await readFile(new URL('server.txt', base), 'utf8'))),
-    'client.html': Buffer.from(
-      (await readFile(new URL('client.html', base), 'utf8')).replace(
-        '/* PUERTO_RICO_SHARED */',
-        shared,
-      ),
-    ),
+    'game.json': Buffer.from(await text('game.json')),
+    'server.js': Buffer.from(shared + '\n' + (await text('server.txt'))),
+    'client.html': Buffer.from(client),
   };
 }
