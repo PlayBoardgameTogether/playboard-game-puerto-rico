@@ -1,0 +1,9 @@
+{
+  "repository": "PlayBoardgameTogether/playboard-game-puerto-rico",
+  "assets": [
+    {
+      "id": "online.puerto-rico",
+      "archive": "puerto-rico"
+    }
+  ]
+}

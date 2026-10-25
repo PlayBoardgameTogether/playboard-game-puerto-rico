@@ -1,0 +1,39 @@
+{
+  "repository": "PlayBoardgameTogether/PlayBoardgameTogether",
+  "commit": "a7e36d32e2febeb5bd7013752f099d01d0502316",
+  "game": "puerto-rico",
+  "platformVersion": "0.17.0",
+  "sdkVersion": "0.1.0",
+  "ownedFiles": [
+    "game-packages/puerto-rico/README.md",
+    "game-packages/puerto-rico/art/cover.svg",
+    "game-packages/puerto-rico/client.html",
+    "game-packages/puerto-rico/game.json",
+    "game-packages/puerto-rico/server.txt",
+    "game-packages/puerto-rico/shared.txt",
+    "scripts/package-puerto-rico.mjs",
+    "scripts/puerto-rico-package.mjs",
+    "tests/unit/puerto-rico-package.test.ts",
+    "docs/games/puerto-rico.md"
+  ],
+  "files": {
+    "game-packages/puerto-rico/README.md": "053b7bbfecb41d91a9f04cf37316d04bfa34a1868e15e3991323900de06b285b",
+    "game-packages/puerto-rico/art/cover.svg": "348f356cca9b0b8e0700e026d5dd04b576451895f21563b3cdff05dea89837e6",
+    "game-packages/puerto-rico/client.html": "837481fcb7557f33e99c4e5f34817c0eac5fd791351b1a0ab7c81bd9a98d74a1",
+    "game-packages/puerto-rico/game.json": "fbb0742c2290ca776be537f8aded86dab7d019be824bf508fc73e52c51deb5c4",
+    "game-packages/puerto-rico/server.txt": "d73e4d55d53a970082e7ae595a8ae4c8546e141c549c770cdaa7acbc421fbe31",
+    "game-packages/puerto-rico/shared.txt": "ef078535d6f39c2b8ebd082d76d2e9b43c18ff5a2612622abd2850a8ff5e5e0f",
+    "scripts/package-puerto-rico.mjs": "6d0ee48af5b3d07eae62a509f9c4a6fe27109b26c13d4dd092b02062cc428c02",
+    "scripts/puerto-rico-package.mjs": "08717842cb536685767434c7483b85bcdc7f8085928014f5ab1f48dfd98871dc",
+    "tests/unit/puerto-rico-package.test.ts": "0382e50ac0a3ee81e6531eb2346fa08e2386f5682c584c0cf2c6d6c3a9b59f22",
+    "docs/games/puerto-rico.md": "f005a73705c9e864a3b3132b42ae8084a311217307c099140dfdbefe561593de",
+    "packages/game-sdk/src/index.ts": "7cac28f2e18b64a995d2980e1d57c4d877387ef1231a83e9f7b877197140a8c3",
+    "apps/api/src/registry/package-runtime.ts": "c92504b1a982e28198d68cf3b598b7cce5f88e7440f2257a7001cb2e919e77c1",
+    "apps/api/src/catalog/game-package.ts": "bf310e4dd4958afe06b91cf14ece1d09a4bfc2859731a983d96687fa02b9a00c",
+    "apps/api/src/catalog/package-art.ts": "b4af59861833180cac85ad873b20c55969a51c475b6413cbba4770ac7bd7dd40",
+    "apps/api/src/errors.ts": "afa3d78ef9c2652db7a91f5644dc00d11684f17b67c48dfcbca4fceb459cddd1"
+  },
+  "adaptations": [
+    "apps/api/src/errors.ts: type-only ErrorCode import points to an extracted platform error-code snapshot"
+  ]
+}
