@@ -11,6 +11,7 @@ pnpm install --frozen-lockfile
 pnpm exec playwright install chromium
 pnpm test
 pnpm build
+pnpm test:ui
 pnpm verify
 ```
 
@@ -31,6 +32,14 @@ pnpm verify
 初始游戏和规则测试来自平台提交 `a7e36d32e2febeb5bd7013752f099d01d0502316`，路径及原始摘要记录在 SOURCE.json。`apps/api/src` 和 `packages/game-sdk/src` 仅包含测试所需的固定兼容性快照，不启动平台 API，也不依赖主仓库工作区。可在明确的平台版本升级时更新该快照；生产安装仍以平台自身审核为准。
 
 玩法、素材和历史说明见 [游戏说明](game-packages/puerto-rico/README.md)。其中平台集成/E2E 命令需在平台主仓库运行；本仓库的独立验证命令以上文为准。
+
+## 海港棋桌 1.1.0
+
+采用独立透明徽章、加勒比海港横幅、23 种建筑、土地和货物图集。货船可直接预览合法装载，殖民所、工人船、贸易所与本人领地分区呈现。手机有岛屿/海港区域切换与装船确认栏；电脑并列比较海港与岛屿。物件可打开大图详情，工人仍可用键盘/数值分配。动画只表现获准的投影事件，保留减少动态效果和只读回放边界。
+
+设计和双端草图见 [海港方案](design/harbor-plan.md)，素材来源、提示词及图集映射见 [美术说明](game-packages/puerto-rico/art/README.md)。仅桌面、展示美术和可选交互增强，经典规则与 contentVersion 仍为 1.0.0；独立游戏版本和资源版本升至 1.1.0，平台版本另行维护。历史安装 1.0.0 与既有对局不覆盖。
+
+本批命令、实际结果与未验证范围见 [1.1.0 交付验证](docs/validation-1.1.0.md)。
 
 ## 许可证
 
