@@ -801,7 +801,7 @@ function deserialize(value) {
 const game = {
   manifest: {
     id: 'online.puerto-rico',
-    version: '1.1.0',
+    version: '1.1.1',
     sdkRange: '^0.1.0',
     contentVersion: '1.0.0',
     name: '波多黎各',

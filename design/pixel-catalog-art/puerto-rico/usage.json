@@ -1,0 +1,13 @@
+{
+  "role": "game-avatar",
+  "source": "icon-source.png",
+  "sourceSha256": "8309f539c86a8400d6919acebceff8afa047b608192b3bcbaa801eb749168eee",
+  "userSelected": true,
+  "export": "game-packages/puerto-rico/art/icon.png",
+  "size": [
+    448,
+    448
+  ],
+  "fit": "contain",
+  "backgroundUsage": false
+}

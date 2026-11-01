@@ -23,7 +23,10 @@ type FixtureState = {
 };
 
 async function board(page: Page, rich = false) {
-  const parsed = readGamePackage(await readFile('dist/game-packages/puerto-rico-1.1.0.zip'));
+  const source = await readFile('game-packages/puerto-rico/server.txt', 'utf8');
+  const version = /version:\s*'([0-9]+\.[0-9]+\.[0-9]+)'/.exec(source)?.[1];
+  if (!version) throw new Error('Missing exact game version');
+  const parsed = readGamePackage(await readFile(`dist/game-packages/puerto-rico-${version}.zip`));
   const game = (await PackageRuntime.create()).extension(parsed.server);
   const rng = new DeterministicRng(131);
   let state = game.setup({ seats: ['a', 'b', 'c'], options: {}, rng }).state;
