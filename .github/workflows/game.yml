@@ -27,6 +27,7 @@ jobs:
           node-version: '22'
       - run: corepack enable
       - run: pnpm install --frozen-lockfile
+      - run: node --test tests/publish-release.test.mjs
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test
       - run: pnpm build
@@ -40,23 +41,30 @@ jobs:
           retention-days: 14
 
   release:
-    if: github.event_name == 'push' && github.ref_type == 'tag'
+    if: >-
+      (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref_type == 'tag')) ||
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
     needs: check
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
       contents: write
+    concurrency:
+      group: game-release
+      cancel-in-progress: false
     steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
       - uses: actions/download-artifact@v8
         with:
           name: game-release
           path: dist/release
       - name: Verify and publish immutable version assets
-        working-directory: dist/release
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-          TAG: ${{ github.ref_name }}
-        run: |
-          sha256sum --check SHA256SUMS
-          gh release create "$TAG" ./*.zip SHA256SUMS release.json --verify-tag --title "$TAG" --generate-notes
+        run: node scripts/publish-release.mjs
