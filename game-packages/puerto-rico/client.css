@@ -1133,3 +1133,5 @@ dialog::backdrop {
     scroll-behavior: auto !important;
   }
 }
+
+#players strong, #status, #estate-title, #activity { min-width: 0; overflow-wrap: anywhere; }

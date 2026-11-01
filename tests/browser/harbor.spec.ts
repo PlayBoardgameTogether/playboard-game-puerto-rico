@@ -23,7 +23,7 @@ type FixtureState = {
 };
 
 async function board(page: Page, rich = false) {
-  const parsed = readGamePackage(await readFile('dist/game-packages/puerto-rico-1.1.0.zip'));
+  const parsed = readGamePackage(await readFile('dist/game-packages/puerto-rico-1.1.1.zip'));
   const game = (await PackageRuntime.create()).extension(parsed.server);
   const rng = new DeterministicRng(131);
   let state = game.setup({ seats: ['a', 'b', 'c'], options: {}, rng }).state;
