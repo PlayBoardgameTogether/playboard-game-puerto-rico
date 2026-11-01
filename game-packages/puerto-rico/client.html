@@ -148,7 +148,13 @@
       (() => {
         'use strict';
         const $ = (id) => document.getElementById(id);
-        let v = null,
+        let playerNames = {};
+function playerName(seatId, ownSeatId, fallback) {
+  const raw = Object.hasOwn(playerNames, seatId) ? playerNames[seatId] : undefined;
+  const name = typeof raw === 'string' ? raw.trim() : '';
+  return name ? name + (seatId === ownSeatId ? '（你）' : '') : fallback;
+}
+let v = null,
           busy = false,
           pending = false,
           replay = false,
@@ -175,7 +181,7 @@
           el.onclick = fn;
           return el;
         };
-        const player = (i) => (i === v.you ? '你' : `玩家 ${i + 1}`);
+        const player = (i) => playerName(v.seats[i], v.seats[v.you], i === v.you ? '你' : `玩家 ${i + 1}`);
         const good = (g) => (g === 5 ? '采石场' : GOODS[g]);
         const locked = () => busy || pending || replay;
         const reduced = matchMedia('(prefers-reduced-motion: reduce)');
@@ -929,7 +935,7 @@
           renderEstate();
           updateButtons();
           $('activity').textContent = history.length
-            ? history.slice(-3).join('　·　')
+            ? history.slice(-3).map(label => label()).join('　·　')
             : '选择角色，把握全桌的节奏。';
         }
         function receive(event) {
@@ -956,7 +962,8 @@
               setRegion(next.phase === 'ship' ? 'harbor' : 'island');
             lastKey = key;
           } else if (!data.busy) pending = false;
-          v = next;
+          playerNames = event.data.playerNames && typeof event.data.playerNames === 'object' ? event.data.playerNames : {};
+  v = next;
           busy = Boolean(data.busy);
           replay = Boolean(data.replay);
           if (v.you === v.current && v.phase === 'assign' && !allocation)
@@ -983,7 +990,7 @@
               produce: () => `${player(e.player)}完成生产`,
               finished: () => `本轮结束，成绩已公开`,
             };
-            if (labels[e.type]) history.push(labels[e.type]());
+            if (labels[e.type]) history.push(labels[e.type]);
             if (history.length > 6) history.shift();
           }
           render();
