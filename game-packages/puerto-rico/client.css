@@ -698,6 +698,12 @@ button.good {
   color: var(--muted);
   font-size: 13px;
 }
+.confirm:has(#allocation-preview) {
+  flex-wrap: wrap;
+}
+.confirm #allocation-preview {
+  flex-basis: 100%;
+}
 .confirm button {
   flex-shrink: 0;
 }
