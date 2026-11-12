@@ -282,7 +282,7 @@
         const hints = {
           role: '你带领全桌行动，并享有角色特权。',
           settle: '点击预览地块，再确认取得。',
-          assign: '在下方岛屿与城市填写岗位人数，再确认。',
+          assign: '所有旧、新工人均可重排。玉米只需种植园；其他作物还需对应加工厂有人上岗。',
           build: '费用已计入采石场与建筑师优惠。',
           produce: '按已启用的种植园与加工厂领取供给。',
           bonus: '所有人生产后，再选一桶你生产过的货物。',
@@ -557,6 +557,7 @@
           const footer = node('div', undefined, 'confirm'),
             text = node('p');
           text.id = 'draft-hint';
+          text.setAttribute('aria-live', 'polite');
           const confirm = button(
             '确认行动',
             () => {
@@ -576,6 +577,12 @@
           );
           confirm.id = 'confirm';
           footer.id = 'confirm-bar';
+          if (v.phase === 'assign') {
+            const preview = node('p', '', 'muted');
+            preview.id = 'allocation-preview';
+            preview.setAttribute('aria-live', 'polite');
+            footer.append(preview);
+          }
           footer.append(text, confirm);
           root.append(footer);
           placeConfirmation();
@@ -604,11 +611,48 @@
           if (!hint) return;
           if (v.phase === 'assign') {
             const used = sum(allocation.island) + sum(allocation.city),
-              p = v.players[v.you];
-            $('allocation-count').textContent = `已分配 ${used} / ${p.workers} 位工人`;
-            hint.textContent = draftValid()
-              ? `确认后待业 ${p.workers - used} 人`
-              : '请尽可能填满所有岗位';
+              p = v.players[v.you],
+              capacity =
+                p.island.length + sum(p.city.map((b) => BUILDINGS[b.id].slots)),
+              required = Math.min(p.workers, capacity),
+              validNumbers =
+                allocation.island.every(
+                  (n) => Number.isInteger(n) && n >= 0 && n <= 1,
+                ) &&
+                allocation.city.every(
+                  (n, i) =>
+                    Number.isInteger(n) &&
+                    n >= 0 &&
+                    n <= BUILDINGS[p.city[i].id].slots,
+                );
+            $('allocation-count').textContent =
+              `已分配 ${validNumbers ? used : '—'} / ${required} 人 · 共 ${p.workers} 名工人、${capacity} 个岗位`;
+            hint.textContent = !validNumbers
+              ? '请按各岗位上限填写非负整数人数。'
+              : used < required
+                ? `还需安排 ${required - used} 人，才能确认。`
+                : used > required
+                  ? `多分配 ${used - required} 人，请减少后确认。`
+                  : `确认后待业 ${p.workers - used} 人 · 尚未提交`;
+            const production = validNumbers
+              ? GOODS.map((_, g) => {
+                  const fields = sum(
+                    p.island.map((t, i) =>
+                      t.good === g ? allocation.island[i] : 0,
+                    ),
+                  );
+                  const mills = sum(
+                    p.city.map((b, i) =>
+                      BUILDINGS[b.id].good === g ? allocation.city[i] : 0,
+                    ),
+                  );
+                  const count = g === 0 ? fields : Math.min(fields, mills);
+                  return count ? `${good(g)} ${count}` : '';
+                }).filter(Boolean)
+              : [];
+            $('allocation-preview').textContent = validNumbers
+              ? `岗位产能预览（未提交）：${production.join('、') || '暂无完整生产链'}。实际生产仍受工匠阶段的供给与行动顺序限制。`
+              : '岗位产能预览：填写有效人数后显示。';
           } else if (v.phase === 'store')
             hint.textContent = draftValid()
               ? `保留 ${sum(keep)} 桶，其余归还供给`
@@ -764,6 +808,7 @@
               input.max = String(slots);
               input.value = String(allocation[type][i]);
               input.setAttribute('aria-label', `${label}工人数`);
+              input.setAttribute('aria-describedby', 'allocation-count draft-hint allocation-preview');
               input.oninput = () => {
                 const n = Number(input.value);
                 allocation[type][i] = Number.isInteger(n) && n >= 0 && n <= slots ? n : NaN;

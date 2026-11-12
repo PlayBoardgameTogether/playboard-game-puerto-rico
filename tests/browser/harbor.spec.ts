@@ -22,7 +22,7 @@ type FixtureState = {
   discard: number[];
 };
 
-async function board(page: Page, rich = false) {
+async function board(page: Page, rich: boolean | 'workers' = false) {
   const source = await readFile('game-packages/puerto-rico/server.txt', 'utf8');
   const version = /version:\s*'([0-9]+\.[0-9]+\.[0-9]+)'/.exec(source)?.[1];
   if (!version) throw new Error('Missing exact game version');
@@ -33,7 +33,21 @@ async function board(page: Page, rich = false) {
   const arranged = state as unknown as FixtureState;
   const index = arranged.current;
   const seatId = arranged.seats[index]!;
-  if (rich) {
+  if (rich === 'workers') {
+    const owner = arranged.players[index]!;
+    for (const good of [0, 1, 2]) {
+      if (owner.island.some((tile) => tile.good === good)) continue;
+      const pool = [arranged.deck, arranged.market, arranged.discard].find(
+        (pool) => pool.includes(good),
+      )!;
+      pool.splice(pool.indexOf(good), 1);
+      owner.island.push({ good, workers: 0 });
+    }
+    owner.city.push({ id: 0, workers: 0 });
+    arranged.buildings[0]!--;
+    state = game.deserialize(arranged);
+  }
+  if (rich === true) {
     const owner = arranged.players[index]!;
     owner.money = 19;
     for (const [g, n] of [5, 4, 3, 2, 3].entries()) {
@@ -126,6 +140,7 @@ async function board(page: Page, rich = false) {
     errors,
     publish,
     lastEvents: () => lastEvents,
+    production: () => (view() as { players: { production: number[] }[] }).players[index]!.production,
     restore: () => {
       state = game.deserialize(game.serialize(state));
     },
@@ -146,6 +161,7 @@ test('themed objects remain usable with keyboard, workers, dialogs and restorati
   await publish();
   await frame.locator('#confirm').click();
   await expect(frame.locator('#status')).toContainText('安排全部工人');
+  await expect(frame.locator('#draft-hint')).toContainText('确认后待业 1 人');
   await frame.getByRole('button', { name: '清空岗位', exact: true }).click();
   await expect(frame.locator('#confirm')).toBeDisabled();
   await frame.getByRole('spinbutton', { name: /地块 1工人数/ }).fill('1');
@@ -230,5 +246,74 @@ test('cargo previews follow legal ships, commit once and suppress duplicate or r
       }
     }),
   ).toBe('blocked');
+  expect(errors).toEqual([]);
+});
+
+test('worker guidance explains shortages, excess and uncommitted production chains', async ({
+  page,
+}, info) => {
+  const { frame, actions, errors, publish, production } = await board(page, 'workers');
+  await frame.getByRole('button', { name: /^市长 ·/ }).click();
+  await frame.locator('#confirm').click();
+  await expect(frame.locator('#status')).toContainText('安排全部工人');
+  await frame.getByRole('button', { name: '清空岗位', exact: true }).click();
+  await expect(frame.locator('#draft-hint')).toContainText('还需安排 2 人');
+  await expect(frame.locator('#allocation-count')).toContainText('4 个岗位');
+  const corn = frame.getByRole('spinbutton', { name: /玉米地块 .*工人数/ });
+  const indigo = frame.getByRole('spinbutton', { name: /靛蓝地块 .*工人数/ });
+  const sugar = frame.getByRole('spinbutton', { name: /蔗糖地块 .*工人数/ });
+  const mill = frame.getByRole('spinbutton', {
+    name: '小型靛蓝厂工人数',
+    exact: true,
+  });
+  await corn.fill('1');
+  await expect(frame.locator('#draft-hint')).toContainText('还需安排 1 人');
+  await indigo.fill('1');
+  await expect(frame.locator('#allocation-preview')).toContainText('玉米 1');
+  await expect(frame.locator('#allocation-preview')).not.toContainText(
+    '靛蓝 1',
+  );
+  await expect(frame.locator('#confirm')).toBeEnabled();
+  await mill.fill('1');
+  await expect(frame.locator('#draft-hint')).toContainText('多分配 1 人');
+  await expect(frame.locator('#confirm')).toBeDisabled();
+  await corn.fill('0');
+  await expect(frame.locator('#allocation-preview')).toContainText('靛蓝 1');
+  await expect(frame.locator('#allocation-preview')).toContainText('供给');
+  await expect(frame.locator('#draft-hint')).toContainText('尚未提交');
+  await sugar.fill('2');
+  await expect(frame.locator('#draft-hint')).toContainText('整数');
+  await expect(frame.locator('#confirm')).toBeDisabled();
+  await sugar.fill('0');
+  await publish(true);
+  await expect(mill).toBeDisabled();
+  await publish();
+  await expect(mill).toHaveValue('1');
+  await expect(indigo).toHaveValue('1');
+  await expect(frame.locator('#confirm')).toBeEnabled();
+  expect(actions).toHaveLength(1);
+  const child = page
+    .frames()
+    .find((child) => child.url().endsWith('/desktop'))!;
+  for (const theme of ['dark', 'light']) {
+    await child.evaluate((theme) => {
+      document.documentElement.dataset.theme = theme;
+    }, theme);
+    expect(
+      await child.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    await page.screenshot({
+      path: info.outputPath(`worker-help-${theme}.png`),
+      fullPage: true,
+    });
+  }
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await frame.locator('#confirm').focus();
+  await page.keyboard.press('Enter');
+  await expect.poll(() => actions.length).toBe(2);
+  expect(actions[1]).toMatchObject({ type: 'assign', city: [1] });
+  await expect.poll(production).toEqual([0, 1, 0, 0, 0]);
   expect(errors).toEqual([]);
 });
