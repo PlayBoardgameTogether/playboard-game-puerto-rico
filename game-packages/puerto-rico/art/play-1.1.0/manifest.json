@@ -1,0 +1,29 @@
+{
+  "version": "1.1.0",
+  "kind": "presentation-art",
+  "game": "puerto-rico",
+  "ruleVersionUnchanged": true,
+  "assets": [
+    {
+      "role": "cover",
+      "file": "cover.png",
+      "sha256": "40667a9559a87e6461f092c35fc4d561f281d3016abf6b13867f0efd0b4ad74b",
+      "width": 960,
+      "height": 600
+    },
+    {
+      "role": "icon",
+      "file": "icon.png",
+      "sha256": "e5870ff8120f7e7479a3a1db437f49bceba13aeee8e8817ef9ac887e75c831a4",
+      "width": 512,
+      "height": 512
+    },
+    {
+      "role": "background",
+      "file": "background.png",
+      "sha256": "2f5d92a966dbd00b78ea82a5f275989632577cbda1b0d0674ae0d73aa5abbe1a",
+      "width": 1280,
+      "height": 720
+    }
+  ]
+}

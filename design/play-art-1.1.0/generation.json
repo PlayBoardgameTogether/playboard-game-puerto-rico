@@ -1,0 +1,51 @@
+{
+  "version": "1.1.0",
+  "kind": "presentation-art",
+  "generator": "built-in image_gen",
+  "license": "GPL-3.0-only",
+  "rulesChanged": false,
+  "assets": [
+    {
+      "game": "puerto-rico",
+      "role": "cover",
+      "prompt": "Use case: stylized-concept. NEW original artwork for a premium PlayBoard board game platform. Sophisticated richly detailed fine PIXEL ART, visible tiny square pixel clusters, tactile physical board game pieces, refined material textures, soft daylight, restrained highlights and natural shadows, mature inviting mood, clear readable silhouette. Coordinated natural wood and dark navy with theme-specific colors. No UI, no paragraphs, no title, no brand logo, no watermark, no border. Avoid generic flat vector, blurry painterly style, glossy casino, low detail cartoon. Asset: landscape 16:10 game cover illustration. Compelling low three-quarter close view across the playable board and pieces, a small scene that makes the viewer want to sit down and play, strong foreground focal point, room to crop safely. Subject: an inviting Caribbean harbor strategy game: wooden sailing ships, barrels, little indigo coffee sugar and corn cargo tokens, terracotta warehouses, lush plantation hills and turquoise sea, no people.",
+      "original": "design/play-art-1.1.0/puerto-rico/cover-original.png",
+      "source": "game-packages/puerto-rico/art/play-1.1.0/cover.png",
+      "originalSha256": "106640370281bee5d435c7c49ea33c2d68cd7afd3b5349cfb3878e5d73dfa0c9",
+      "sourceSha256": "40667a9559a87e6461f092c35fc4d561f281d3016abf6b13867f0efd0b4ad74b",
+      "webp": "puerto-rico-cover.webp",
+      "webpSha256": "243f40f184b656667d6a0d8d6a947a059a28e8b8c63efd3e123fd42622992ea0",
+      "width": 960,
+      "height": 600,
+      "bytes": 265366
+    },
+    {
+      "game": "puerto-rico",
+      "role": "icon",
+      "prompt": "Use case: stylized-concept. NEW original artwork for a premium PlayBoard board game platform. Sophisticated richly detailed fine PIXEL ART, visible tiny square pixel clusters, tactile physical board game pieces, refined material textures, soft daylight, restrained highlights and natural shadows, mature inviting mood, clear readable silhouette. Coordinated natural wood and dark navy with theme-specific colors. No UI, no paragraphs, no title, no brand logo, no watermark, no border. Avoid generic flat vector, blurry painterly style, glossy casino, low detail cartoon. Asset: square 1024x1024 game avatar. Close-up central iconic arrangement of the main game objects, all important edges visible, 8% breathing room, instantly recognizable even at 64px. Subject: an inviting Caribbean harbor strategy game: wooden sailing ships, barrels, little indigo coffee sugar and corn cargo tokens, terracotta warehouses, lush plantation hills and turquoise sea, no people.",
+      "original": "design/play-art-1.1.0/puerto-rico/icon-original.png",
+      "source": "game-packages/puerto-rico/art/play-1.1.0/icon.png",
+      "originalSha256": "08a7331a0b6f7eef5c73a747148b150710d3b70389466f600c4601b554a75af2",
+      "sourceSha256": "e5870ff8120f7e7479a3a1db437f49bceba13aeee8e8817ef9ac887e75c831a4",
+      "webp": "puerto-rico-icon.webp",
+      "webpSha256": "f065ce2ae45270b16fdf8be3b685ec4007fbeac13fdd103c3bae099e839ad25b",
+      "width": 512,
+      "height": 512,
+      "bytes": 140042
+    },
+    {
+      "game": "puerto-rico",
+      "role": "background",
+      "prompt": "Use case: stylized-concept. NEW original artwork for a premium PlayBoard board game platform. Sophisticated richly detailed fine PIXEL ART, visible tiny square pixel clusters, tactile physical board game pieces, refined material textures, soft daylight, restrained highlights and natural shadows, mature inviting mood, clear readable silhouette. Coordinated natural wood and dark navy with theme-specific colors. No UI, no paragraphs, no title, no brand logo, no watermark, no border. Avoid generic flat vector, blurry painterly style, glossy casino, low detail cartoon. Asset: wide 16:9 immersive background original art. Rich thematic environment extending around a softly lit tabletop in the foreground, detailed atmosphere at the edges, calm low contrast central area suitable behind game UI, no embedded interface. Subject: an inviting Caribbean harbor strategy game: wooden sailing ships, barrels, little indigo coffee sugar and corn cargo tokens, terracotta warehouses, lush plantation hills and turquoise sea, no people.",
+      "original": "design/play-art-1.1.0/puerto-rico/background-original.png",
+      "source": "game-packages/puerto-rico/art/play-1.1.0/background.png",
+      "originalSha256": "aee75f866cbe4ca9e53073bb3ebb8ad351b16419b9c9e0d289049d19b03edcc0",
+      "sourceSha256": "2f5d92a966dbd00b78ea82a5f275989632577cbda1b0d0674ae0d73aa5abbe1a",
+      "webp": "puerto-rico-background.webp",
+      "webpSha256": "eb9d4c7745eee4c5f35fe0d36b274cbcb2ab95777c74b97927e77dd62243177d",
+      "width": 1280,
+      "height": 720,
+      "bytes": 410744
+    }
+  ]
+}
