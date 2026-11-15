@@ -11,6 +11,7 @@
   "scripts": {
     "test": "vitest run tests/unit",
     "build": "node scripts/package-puerto-rico.mjs",
+    "test:ui": "playwright test --config tests/browser.config.ts",
     "verify": "vitest run tests/release.test.ts"
   },
   "devDependencies": {
